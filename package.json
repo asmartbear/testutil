@@ -1,6 +1,6 @@
 {
   "name": "@asmartbear/testutil",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Unit test utilities for Typescript",
   "keywords": [
     "testing",
