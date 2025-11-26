@@ -116,6 +116,20 @@ export function throws<T extends Error>(f: (...args: any) => unknown, errorClass
 }
 
 /**
+ * Asserts that an async function throws a specific class of error; you must `await` the result!
+ */
+export async function throwsAsync(f: (...args: any) => Promise<unknown>, message?: string): Promise<void> {
+    try {
+        await f()
+        throw new Error(`Expected expression to throw an exception, but it didn't\n\n${message ?? ""}`.trim(), { cause: "unit test" })
+    } catch (e) {
+        if (e instanceof Error) {
+            if (e.cause === "unit test") throw e       // pass it through
+        }
+    }
+}
+
+/**
  * A floating-point number reasonably close to another, since they can have silly round-off errors. 
  */
 export function near(actual: number, expected: number, message?: string) {
