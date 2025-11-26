@@ -1,4 +1,5 @@
-import { Simple, Simplifiable, simplifiedToDisplay, simplifyOpaqueType } from '@asmartbear/simplified'
+import { Simplifiable, simplifiedToDisplay, simplifyOpaqueType } from '@asmartbear/simplified'
+import { Console } from 'console';
 
 /**
  * Given a type, returns the Class of that type.
@@ -131,5 +132,29 @@ export function nearFields<T extends Record<string, number>>(actual: T, expected
         try {
             expect(actual[k]).toBeCloseTo(v)
         } catch (e: any) { eq(actual, expected as any, message) }     // use this to display everything
+    }
+}
+
+/** Tests the `console.log()` output of a function, triming the final line-ending */
+export function consoleLog(fLogger: () => unknown, expected: string, message?: string) {
+    let output = ''
+
+    const jestConsoleLog = console.log
+    console.log = new Console({ stdout: process.stdout, stderr: process.stderr, colorMode: false }).log
+    const originalWrite = process.stdout.write
+    process.stdout.write = (chunk) => {
+        output += chunk
+        return true
+    }
+
+    try {
+        fLogger()
+        if (output[output.length - 1] == "\n") output = output.slice(0, -1)
+        expect(output).toEqual(expected)
+    } catch (e: any) {
+        if (message) { e.message = `${e.message}\n\n${message}` } throw e
+    } finally {
+        process.stdout.write = originalWrite
+        console.log = jestConsoleLog
     }
 }

@@ -13,3 +13,10 @@ test('simplified', () => {
     m.set("bar", "hello")
     T.isSimple(m, "bar=hello, foo=1")
 })
+
+test('console output', () => {
+    T.consoleLog(() => console.log("foo"), "foo")
+    T.consoleLog(() => console.log("foo", "bar"), "foo bar")
+    T.consoleLog(() => console.log("foo", 123, 456), "foo 123 456")
+    T.consoleLog(() => console.log("foo", ["bar"]), "foo [ 'bar' ]")
+})
