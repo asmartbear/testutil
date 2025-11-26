@@ -1,3 +1,5 @@
+import { Simple, Simplifiable, simplifiedToDisplay, simplifyOpaqueType } from '@asmartbear/simplified'
+
 /**
  * Given a type, returns the Class of that type.
  */
@@ -17,6 +19,19 @@ export function be<T, E extends T>(actual: T, expected: E, message?: string): as
 export function eq<T, E extends T>(actual: T, expected: E, message?: string): asserts actual is E {
     try {
         expect(actual).toEqual(expected)
+    } catch (e: any) { if (message) { e.message = `${e.message}\n\n${message}` } throw e }
+}
+
+export function ne<T, E extends T>(actual: T, expected: E, message?: string): void {
+    try {
+        expect(actual).not.toEqual(expected)
+    } catch (e: any) { if (message) { e.message = `${e.message}\n\n${message}` } throw e }
+}
+
+/** Tests whether `simplify(actual)` equals a string; useful for simpler checks of complex objects */
+export function isSimple(actual: Exclude<Simplifiable, Promise<Simplifiable>>, expected: string, message?: string): void {
+    try {
+        expect(simplifiedToDisplay(simplifyOpaqueType(actual))).toEqual(expected)
     } catch (e: any) { if (message) { e.message = `${e.message}\n\n${message}` } throw e }
 }
 
