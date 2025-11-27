@@ -20,3 +20,15 @@ test('console output', () => {
     T.consoleLog(() => console.log("foo", 123, 456), "foo 123 456")
     T.consoleLog(() => console.log("foo", ["bar"]), "foo [ 'bar' ]")
 })
+
+test('object includes', () => {
+    T.includes({}, {})
+    T.includes({ a: 1 }, {})
+    T.includes({ a: 1 }, { a: 1 })
+    T.includes({ a: 1, b: 2 }, { a: 1 })
+    T.includes({ a: 1, b: 2 }, { a: 1, b: 2 })
+    T.includes({ a: 1, b: 2 }, { b: 2 })
+    T.throws(() => T.includes({}, { a: 1 }))
+    T.throws(() => T.includes<any>({ b: 2 }, { a: 1 }))
+    T.throws(() => T.includes({ b: 2 }, { b: 1 }))
+})

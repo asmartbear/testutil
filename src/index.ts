@@ -98,6 +98,15 @@ export function isInteger(actual: number, min?: number, max?: number, message?: 
     }
 }
 
+export function includes<T extends object>(actual: T, expected: Partial<T>, message?: string): void {
+    try {
+        for (const [k, v] of Object.entries(expected)) {
+            if (!(k in actual)) throw new Error(k + " missing")
+            expect((actual as any)[k]).toEqual(v)
+        }
+    } catch (e: any) { if (message) { e.message = `${e.message}\n\n${message}` } throw e }
+}
+
 /**
  * Asserts that a function throws a specific class of error.
  */
