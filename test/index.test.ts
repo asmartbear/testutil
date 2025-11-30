@@ -43,3 +43,11 @@ test('length', () => {
     T.len(new Set([0]), 1)
     T.len(new Set([0, -1]), 2)
 })
+
+test('isInstance', () => {
+    const foo: any = [1, 2, 3]
+    T.throws(() => T.isInstance(foo, Set))
+    T.throws(() => T.isInstance(foo, Date))
+    T.isInstance(foo, Object)
+    T.isInstance(foo, Array, "named array instance class")
+})

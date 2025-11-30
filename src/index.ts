@@ -39,7 +39,7 @@ export function isSimple(actual: Exclude<Simplifiable, Promise<Simplifiable>>, e
 /**
  * Asserts the object exists and of a specific type, clarifying that type for Typescript along the way.
  */
-export function isInstance<T, C extends ClassOf<T>>(actual: T | null | undefined, cls: C, expected: string, message?: string): asserts actual is InstanceOf<C> {
+export function isInstance<T, C extends ClassOf<T>>(actual: T | null | undefined, cls: C, message?: string): asserts actual is InstanceOf<C> {
     try {
         expect(actual).toBeInstanceOf(cls)
     } catch (e: any) { if (message) { e.message = `${e.message}\n\n${message}` } throw e }
