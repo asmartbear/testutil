@@ -39,17 +39,22 @@ export function isSimple(actual: Exclude<Simplifiable, Promise<Simplifiable>>, e
 /**
  * Asserts the object exists and of a specific type, clarifying that type for Typescript along the way.
  */
-export function isInstance<T, C extends ClassOf<T>>(actual: T | null | undefined, cls: C): asserts actual is InstanceOf<C> {
-    expect(actual).toBeInstanceOf(cls)
+export function isInstance<T, C extends ClassOf<T>>(actual: T | null | undefined, cls: C, expected: string, message?: string): asserts actual is InstanceOf<C> {
+    try {
+        expect(actual).toBeInstanceOf(cls)
+    } catch (e: any) { if (message) { e.message = `${e.message}\n\n${message}` } throw e }
 }
 
 /**
- * Asserts the length of anything with a `length` field, like strings and arrays.
+ * Asserts the length of anything with a `length` or `size` field, like strings, arrays, `Set`, and `Map`.
  * Fails if `null` or `undefined`, and also tells the caller that for typescript.
  */
-export function len<T extends { length: number }>(actual: T | null | undefined, expected: number, message?: string): asserts actual is T {
+export function len<T extends { length: number } | { size: number }>(actual: T | null | undefined, expected: number, message?: string): asserts actual is T {
     try {
-        expect(actual?.length).toEqual(expected)
+        if (!actual) throw new Error("was " + actual)
+        else if ('length' in actual) expect(actual.length).toEqual(expected)
+        else if ('size' in actual) expect(actual.size).toEqual(expected)
+        else throw new Error("shouldn't get here")
     } catch (e: any) { if (message) { e.message = `${e.message}\n\n${message}` } throw e }
 }
 
@@ -98,6 +103,9 @@ export function isInteger(actual: number, min?: number, max?: number, message?: 
     }
 }
 
+/**
+ * Asserts an actual object contains _at least_ the expected fields.  Could have more, so it tests just that subset.
+ */
 export function includes<T extends object>(actual: T, expected: Partial<T>, message?: string): void {
     try {
         for (const [k, v] of Object.entries(expected)) {

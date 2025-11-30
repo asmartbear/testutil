@@ -32,3 +32,14 @@ test('object includes', () => {
     T.throws(() => T.includes<any>({ b: 2 }, { a: 1 }))
     T.throws(() => T.includes({ b: 2 }, { b: 1 }))
 })
+
+test('length', () => {
+    T.throws(() => T.len(undefined, 0))
+    T.throws(() => T.len(null, 0))
+    T.len([], 0)
+    T.len([0], 1)
+    T.len(["a", "b"], 2)
+    T.len(new Set(), 0)
+    T.len(new Set([0]), 1)
+    T.len(new Set([0, -1]), 2)
+})
